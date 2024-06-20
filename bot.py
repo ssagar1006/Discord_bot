@@ -4,6 +4,10 @@ from itertools import cycle
 import os
 import asyncio
 from dotenv import load_dotenv
+import tracemalloc
+
+
+tracemalloc.start()
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,7 +35,7 @@ async def on_ready():
 
 # Function to load all cogs
 async def load_cogs():
-    for filename in os.listdir("./cogs"):
+    for filename in os.listdir("./bot/cogs"):
         if filename.endswith(".py"):
             try:
                 await client.load_extension(f"cogs.{filename[:-3]}")
@@ -45,6 +49,9 @@ async def main():
     async with client:
         await load_cogs()
         await client.start(os.getenv("DISCORD_TOKEN"))  # Retrieve token from environment variable
+        await client.add_cog(TeamCog(client))  # Await adding the TeamCog
+
+
 
 # Run the main coroutine
 if __name__ == "__main__":
